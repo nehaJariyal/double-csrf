@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSRF Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1>Submit Form with CSRF Protection</h1>
+  
+  <form id="myForm">
+    <input type="text" name="data" placeholder="Enter some data" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    async function getCsrfToken() {
+      try {
+        const response = await axios.get('/csrf-token');
+        return response.data.csrfToken;
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const form = document.getElementById('myForm');
+      const formData = new FormData(form);
+      
+      const csrfToken = await getCsrfToken();
+      
+      try {
+        await axios.post('/submit', formData, {
+          headers: {
+            'X-CSRF-Token': csrfToken
+          }
+        });
+        alert('Form submitted successfully');
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Form submission failed');
+      }
+    }
+
+    document.getElementById('myForm').addEventListener('submit', handleSubmit);
+  </script>
+</body>
+</html>
