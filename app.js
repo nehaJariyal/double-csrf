@@ -7,7 +7,6 @@ const { doubleCsrf } = require('csrf-csrf');
 const app = express();
 const port = 4000;
 
-// Define options for double CSRF protection
 
 const doubleCsrfOptions = {
   getSecret: (req) => req.session.csrfSecret,
